@@ -1,2 +1,3 @@
 settings.py
-req_postgres/setting.py
+settings.pyc
+req_postgres/setting.pyc
