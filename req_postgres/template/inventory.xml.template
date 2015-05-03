@@ -12,6 +12,7 @@
             <size>{{p.size|e}}</size>
             <price>{{p.price}}</price>
             <quatity>{{p.quatity}}</quatity>
+            <name>{{p.product_name}}</name>
         </product>
         {%endfor%}
     </products>
