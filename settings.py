@@ -19,6 +19,7 @@
 """
 
 import os
+DEBUG = True
 
 # We want to seamlessy run our API both locally and on Heroku. If running on
 # Heroku, sensible DB connection settings are stored in environment variables.
@@ -34,6 +35,7 @@ MONGO_DBNAME = os.environ.get('MONGO_DBNAME', 'evedemo')
 # read-only access to the endpoint).
 #RESOURCE_METHODS = ['GET', 'POST', 'DELETE']
 RESOURCE_METHODS = ['GET']
+RETURN_MEDIA_AS_URL = True
 
 # Enable reads (GET), edits (PATCH) and deletes of individual items
 # (defaults to read-only item access).
@@ -42,8 +44,8 @@ ITEM_METHODS = ['GET']
 
 # We enable standard client cache directives for all resources exposed by the
 # API. We can always override these global settings later.
-CACHE_CONTROL = 'max-age=20'
-CACHE_EXPIRES = 20
+CACHE_CONTROL = 'max-age=200'
+CACHE_EXPIRES = 200
 
 # Our API will expose two resources (MongoDB collections): 'people' and
 # 'works'. In order to allow for proper data validation, we define beaviour
@@ -146,3 +148,11 @@ DOMAIN = {
     'user': {},
     'stockfull': stockfull,
 }
+
+pg = {
+    'host': '127.0.0.1',
+    'port': 18068,
+    'db': 'hxdb',
+    'user': 'chao',
+}
+

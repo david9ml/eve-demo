@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inventory>
+    <products>
+        {% for p in ps %}
+        <product>
+            <code>{{p.code}}</code>
+            <cate>{{p.cate|e}}</cate>
+            <brand>{{p.brand|e}}</brand>
+            <model>{{p.model|e}}</model>
+            <material>{{p.material|e}}</material>
+            <color>{{p.color|e}}</color>
+            <size>{{p.size|e}}</size>
+            <price>{{p.price}}</price>
+            <quatity>{{p.quatity}}</quatity>
+        </product>
+        {%endfor%}
+    </products>
+</inventory>
