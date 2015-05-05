@@ -48,7 +48,7 @@ inventory_datafile = os.path.join(rootpath, 'data', 'inventory.%s.' %today)
 pgcon = psycopg2.connect(database=pg['db'], user=pg['user'], host=pg['host'], port=pg['port'])
 #mcon = pymongo.Connection(host = mdb['host'], port=mdb['port'])
 
-pkey = ('_id', 'code', 'cate', 'brand', 'model', 'material', 'color', 'size', 'price', 'quatity', 'product_name')
+pkey = ('_id', 'code', 'cate', 'brand', 'model', 'material', 'color', 'size', 'price', 'quatity', 'product_name', 'price_eu')
 
 def misc_info(pgcon):
     cur = pgcon.cursor()
@@ -387,13 +387,13 @@ def _output_products_in_stock(pgcon):
     cur = pgcon.cursor()
     res = []
     for pid, qty in s.items():
-        sql_cmd = "select pp.product_tmpl_id,pp.default_code,pt.hx_product_brand_id,pt.hx_model,pt.hx_material,pt.hx_color,pp.hx_product_size,pt.%s,pp.name from product_product as pp, product_template as pt where pp.id = %d and pp.product_tmpl_id = pt.id" %(price_field, pid)
+        sql_cmd = "select pp.product_tmpl_id,pp.default_code,pt.hx_product_brand_id,pt.hx_model,pt.hx_material,pt.hx_color,pp.hx_product_size,pt.%s,pp.name, pt.hx_price_eu from product_product as pp, product_template as pt where pp.id = %d and pp.product_tmpl_id = pt.id" %(price_field, pid)
         cur.execute(sql_cmd)
-        product_tmpl_id,default_code,hx_product_brand_id,hx_model,hx_material,hx_color,hx_product_size,hx_price,product_name = cur.fetchall()[0]
+        product_tmpl_id,default_code,hx_product_brand_id,hx_model,hx_material,hx_color,hx_product_size,hx_price,product_name, hx_price_eu = cur.fetchall()[0]
         sql_cmd = "select categ_id from product_template where id = %d" %(product_tmpl_id)
         cur.execute(sql_cmd)
         categ_id = cur.fetchall()[0][0]
-        pvalue = [pid, default_code, dcates[categ_id], dbrands[hx_product_brand_id], hx_model or '', hx_material or '', hx_color or '', dsizes[hx_product_size], hx_price, qty, product_name]
+        pvalue = [pid, default_code, dcates[categ_id], dbrands[hx_product_brand_id], hx_model or '', hx_material or '', hx_color or '', dsizes[hx_product_size], hx_price, qty, product_name, hx_price_eu]
         pinfo = dict(zip(pkey, pvalue))
         #col.insert(pinfo)
         res.append(pinfo)

@@ -13,6 +13,7 @@
             <price>{{p.price}}</price>
             <quatity>{{p.quatity}}</quatity>
             <name>{{p.product_name}}</name>
+            <price_eu>{{p.price_eu}}</price_eu>
         </product>
         {%endfor%}
     </products>
