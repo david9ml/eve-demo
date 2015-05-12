@@ -514,7 +514,7 @@ def _out_inc_products_in_stock_v2(pgcon):
         product_name, hx_price_eu = pgcon_cur.fetchall()[0]
         x = p['quatity'] + r_full.get(p['_id'], 0)
         p['quatity'] =  x >= 0 and x or 0
-        p['product_name']=product_name
+        p['product_name']=product_name.replace('&', ' ')
         p['price_eu']=hx_price_eu
     template = jinja2.Template(open(inventory_template_file).read().decode('utf-8'))
     render_obj = template.render(ps = r).encode('utf-8')

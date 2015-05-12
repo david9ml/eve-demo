@@ -390,6 +390,7 @@ def _output_products_in_stock(pgcon):
         sql_cmd = "select pp.product_tmpl_id,pp.default_code,pt.hx_product_brand_id,pt.hx_model,pt.hx_material,pt.hx_color,pp.hx_product_size,pt.%s,pp.name, pt.hx_price_eu from product_product as pp, product_template as pt where pp.id = %d and pp.product_tmpl_id = pt.id" %(price_field, pid)
         cur.execute(sql_cmd)
         product_tmpl_id,default_code,hx_product_brand_id,hx_model,hx_material,hx_color,hx_product_size,hx_price,product_name, hx_price_eu = cur.fetchall()[0]
+        product_name = product_name.replace('&',' ')
         sql_cmd = "select categ_id from product_template where id = %d" %(product_tmpl_id)
         cur.execute(sql_cmd)
         categ_id = cur.fetchall()[0][0]
