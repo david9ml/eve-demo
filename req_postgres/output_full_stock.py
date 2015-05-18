@@ -48,7 +48,7 @@ inventory_datafile = os.path.join(rootpath, 'data', 'inventory.%s.' %today)
 pgcon = psycopg2.connect(database=pg['db'], user=pg['user'], host=pg['host'], port=pg['port'])
 #mcon = pymongo.Connection(host = mdb['host'], port=mdb['port'])
 
-pkey = ('_id', 'code', 'cate', 'brand', 'model', 'material', 'color', 'size', 'price', 'quatity', 'product_name', 'price_eu')
+pkey = ('_id', 'code', 'cate', 'brand', 'model', 'material', 'color', 'size', 'price', 'quatity', 'product_name', 'price_eu', 'pt_name', 'pt_sku')
 
 def misc_info(pgcon):
     cur = pgcon.cursor()
@@ -361,7 +361,7 @@ def _full_stock_lots(pgcon, lots):
     sql_cmd="select product_id,sum(product_qty) from stock_move where id <= %d and location_id not in (%s) and location_dest_id in (%s) and state ='done' group by product_id" %(max_stock_id, lots, lots)
     cur.execute(sql_cmd)
     stock = dict(cur.fetchall())
-    sql_cmd="select product_id,sum(product_qty) from stock_move where id <= %d and location_id in (%s) and location_dest_id not in (%s) and state in ('done','confirmed','waiting','assigned') group by product_id" %(max_stock_id, lots, lots)
+    sql_cmd="select product_id,sum(product_qty) from stock_move where id <= %d and location_id in (%s) and location_dest_id not in (%s) and state in ('done','confirmed','draft','assigned') group by product_id" %(max_stock_id, lots, lots)
     cur.execute(sql_cmd)
     for pid, qty in cur.fetchall():
         stock[pid] -= qty
@@ -387,14 +387,15 @@ def _output_products_in_stock(pgcon):
     cur = pgcon.cursor()
     res = []
     for pid, qty in s.items():
-        sql_cmd = "select pp.product_tmpl_id,pp.default_code,pt.hx_product_brand_id,pt.hx_model,pt.hx_material,pt.hx_color,pp.hx_product_size,pt.%s,pp.name, pt.hx_price_eu from product_product as pp, product_template as pt where pp.id = %d and pp.product_tmpl_id = pt.id" %(price_field, pid)
+        sql_cmd = "select pp.product_tmpl_id,pp.default_code,pt.hx_product_brand_id,pt.hx_model,pt.hx_material,pt.hx_color,pp.hx_product_size,pt.%s,pp.name, pt.hx_price_eu, pt.name, pt.default_code from product_product as pp, product_template as pt where pp.id = %d and pp.product_tmpl_id = pt.id" %(price_field, pid)
         cur.execute(sql_cmd)
-        product_tmpl_id,default_code,hx_product_brand_id,hx_model,hx_material,hx_color,hx_product_size,hx_price,product_name, hx_price_eu = cur.fetchall()[0]
-        product_name = product_name.replace('&',' ')
+        product_tmpl_id,default_code,hx_product_brand_id,hx_model,hx_material,hx_color,hx_product_size,hx_price,product_name, hx_price_eu, pt_name, pt_sku = cur.fetchall()[0]
+        product_name = product_name.replace('&','_')
+        pt_name = pt_name.replace('&','_')
         sql_cmd = "select categ_id from product_template where id = %d" %(product_tmpl_id)
         cur.execute(sql_cmd)
         categ_id = cur.fetchall()[0][0]
-        pvalue = [pid, default_code, dcates[categ_id], dbrands[hx_product_brand_id], hx_model or '', hx_material or '', hx_color or '', dsizes[hx_product_size], hx_price, qty, product_name, hx_price_eu]
+        pvalue = [pid, default_code, dcates[categ_id], dbrands[hx_product_brand_id], hx_model or '', hx_material or '', hx_color or '', dsizes[hx_product_size], hx_price, qty, product_name, hx_price_eu, pt_name, pt_sku]
         pinfo = dict(zip(pkey, pvalue))
         #col.insert(pinfo)
         res.append(pinfo)

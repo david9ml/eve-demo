@@ -14,6 +14,8 @@
             <quatity>{{p.quatity}}</quatity>
             <name>{{p.product_name}}</name>
             <price_eu>{{p.price_eu}}</price_eu>
+            <pt_name>{{p.pt_name}}</pt_name>
+            <pt_sku>{{p.pt_sku}}</pt_sku>
         </product>
         {%endfor%}
     </products>
