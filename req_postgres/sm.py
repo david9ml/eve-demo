@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 #coding: utf8
 # by wgwang svd.wang@gmail.com
-# 
+#
 
 import os
-import sys 
+import sys
 import psycopg2
 import pymongo
 import jinja2
@@ -16,7 +16,7 @@ except:
     interval = 600
 import traceback
 import logging
-import time 
+import time
 import zipfile
 import tarfile
 
@@ -116,7 +116,7 @@ def compute_onsale_price(pgcon, stockdb, company, pricelist_version):
         p_count -= 1
         p = p_mdb.next()
         p_id = p['_id']
-    
+
         sql_cmd = "select id from product_pricelist_item where price_version_id = %s"%(pricelist_version,)
         cur.execute(sql_cmd)
         item_list = cur.fetchall()
@@ -196,7 +196,7 @@ def compute_onsale_price(pgcon, stockdb, company, pricelist_version):
     template = jinja2.Template(open(inventory_sale_template_file).read().decode('utf-8'))
     r = template.render(ps = res).encode('utf-8')
     fname = inventory_datafile+company+'.onsale'+'.xml'
-    #write xml file 
+    #write xml file
     fw = open(fname, 'w')
     fw.write(r)
     fw.close()
@@ -235,7 +235,7 @@ def full_stock_company(pgcon, stockdb, company):
     template = jinja2.Template(open(inventory_template_file).read().decode('utf-8'))
     r = template.render(ps = res).encode('utf-8')
     fname = inventory_datafile+company+'.xml'
-    #write xml file 
+    #write xml file
     fw = open(fname, 'w')
     fw.write(r)
     fw.close()
@@ -336,7 +336,7 @@ def inc_stock_company_once(pgcon, stockdb, company):
             e = traceback.format_exc()
             logging.warning('inc_stock_company_once exception: \n %s' %(e))
             os.system('echo -e "%s" | mail -s "[WARNING][STOCKAPI]error message - %s" "wangwenguang@hxpop.com"' %(e, today))
-        
+
 def inc_stock(pgcon, stockdb):
     while True:
         if datetime.now().hour  == 23:
