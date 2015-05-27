@@ -19,6 +19,7 @@ import os
 from eve import Eve
 import json
 import time
+from ..efashion_task import *
 #from req_postgres import output_all_products_in_stock
 
 # Heroku support: bind to PORT if defined, otherwise default to 5000.
