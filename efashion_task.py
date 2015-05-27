@@ -86,4 +86,4 @@ def create_order_from_efashion(pgcon, sku_str, qty_num, price_unit=3912.0):
         return False
     return True
 
-create_order_from_efashion(pgcon,'9600000027277', 1)
+#create_order_from_efashion(pgcon,'9600000027277', 1)

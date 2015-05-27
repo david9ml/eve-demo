@@ -19,7 +19,7 @@ import os
 from eve import Eve
 import json
 import time
-from ..efashion_task import *
+from efashion_task import *
 #from req_postgres import output_all_products_in_stock
 
 # Heroku support: bind to PORT if defined, otherwise default to 5000.
@@ -69,14 +69,16 @@ def post_post_callback(resource, request, payload):
         request_dict = request.json
         sku_str = request_dict['sku']
         qty_str = request_dict['qty']
+        return_value = create_order_from_efashion(pgcon,str(sku_str), int(qty_str))
         print(sku_str)
         print(qty_str)
+        print(return_value)
         #print(request.args["sku"])
         print("-------------------------debug----------------------")
 
 def read_insert(resource, items):
     if resource == 'order':
-        print(items)
+        #print(items)
         pass
 
 app = Eve()
