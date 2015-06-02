@@ -71,7 +71,7 @@ def post_post_callback(resource, request, payload):
             request_dict = request.json
             sku_str = request_dict['sku']
             qty_str = request_dict['qty']
-            if sku_str.startswith('96'):
+            if sku_str.startswith('96') and 'fs' not in sku_str:
                 return_value = create_order_from_efashion(pgcon,str(sku_str), int(qty_str))
             else:
                 return_value = False
