@@ -10,9 +10,9 @@ import pymongo
 import jinja2
 #import imp
 from datetime import datetime
-from setting import pg, mdb
+from .setting import pg, mdb
 try:
-    from setting import interval
+    from .setting import interval
 except:
     interval = 600
 import traceback
@@ -146,9 +146,11 @@ def get_children_skulist_from_parent_product(pgcon, parent_id):
     sql_cmd = "select default_code from product_product where product_tmpl_id=%s;" %parent_id
     cur.execute(sql_cmd)
     cur_all = cur.fetchall()
-    return cur_all
+    return [e[0] for e in cur_all]
 
-return_value = get_pt_id_from_psku(pgcon, "9200000207404")
-print(return_value)
-cur_all = get_children_skulist_from_parent_product(pgcon, return_value)
-print(cur_all)
+def get_children_skulist_from_parent_sku(psku_str):
+    pgcon = psycopg2.connect(database=pg['db'], user=pg['user'], host=pg['host'], port=pg['port'])
+    pt_id = get_pt_id_from_psku(pgcon, psku_str)
+    return get_children_skulist_from_parent_product(pgcon, parent_id=str(pt_id))
+
+#print(get_children_skulist_from_parent_sku("9200000207404"))
