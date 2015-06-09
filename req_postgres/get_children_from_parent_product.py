@@ -8,6 +8,7 @@ import sys
 import psycopg2
 import pymongo
 import jinja2
+#import imp
 from datetime import datetime
 from setting import pg, mdb
 try:
@@ -28,8 +29,8 @@ pid = os.fork()
 if pid != 0:
     sys.exit()
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
+#imp.reload(sys)
+#sys.setdefaultencoding('utf-8')
 today = datetime.today().strftime('%Y%m%d')
 rootpath = os.path.abspath(os.path.join(os.getcwd(), os.path.dirname(sys.argv[0]), '..'))
 '''
@@ -148,6 +149,6 @@ def get_children_skulist_from_parent_product(pgcon, parent_id):
     return cur_all
 
 return_value = get_pt_id_from_psku(pgcon, "9200000207404")
-print return_value
+print(return_value)
 cur_all = get_children_skulist_from_parent_product(pgcon, return_value)
-print cur_all
+print(cur_all)
