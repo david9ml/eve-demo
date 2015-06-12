@@ -49,7 +49,7 @@ inc_inventory_datafile = os.path.join(rootpath, 'data', 'inventory.%s.' %today)
 pgcon = psycopg2.connect(database=pg['db'], user=pg['user'], host=pg['host'], port=pg['port'])
 #mcon = pymongo.Connection(host = mdb['host'], port=mdb['port'])
 
-pkey = ('_id', 'code', 'cate', 'brand', 'model', 'material', 'color', 'size', 'price', 'quatity', 'product_name', 'price_eu')
+pkey = ('_id', 'code', 'cate', 'brand', 'model', 'material', 'color', 'size', 'price', 'quatity', 'product_name', 'price_eu', 'pt_name', 'pt_sku')
 
 def misc_info(pgcon):
     cur = pgcon.cursor()
@@ -509,13 +509,15 @@ def _out_inc_products_in_stock_v2(pgcon):
     r_full = dict([(i['_id'], i['quatity']) for i in r_full])
     pgcon_cur = pgcon.cursor()
     for p in r:
-        sql_cmd = "select pp.name, pt.hx_price_eu from product_product as pp, product_template as pt where pp.product_tmpl_id = pt.id and pp.id=%s" % p['_id']
+        sql_cmd = "select pp.name, pt.hx_price_eu, pt.name, pt.default_code from product_product as pp, product_template as pt where pp.product_tmpl_id = pt.id and pp.id=%s" % p['_id']
         pgcon_cur.execute(sql_cmd)
-        product_name, hx_price_eu = pgcon_cur.fetchall()[0]
+        product_name, hx_price_eu, pt_name, pt_sku  = pgcon_cur.fetchall()[0]
         x = p['quatity'] + r_full.get(p['_id'], 0)
         p['quatity'] =  x >= 0 and x or 0
         p['product_name']=product_name.replace('&', ' ')
         p['price_eu']=hx_price_eu
+        p['pt_name']=pt_name.replace('&', ' ')
+        p['pt_sku']=pt_sku
     template = jinja2.Template(open(inventory_template_file).read().decode('utf-8'))
     render_obj = template.render(ps = r).encode('utf-8')
     fname = inventory_datafile+'hk.inc.latest'+'.xml'
