@@ -75,11 +75,24 @@ def post_post_callback(resource, request, payload):
         try:
             p_sku_str = request_dict['p_sku']
         except:
+            traceback.print_exc()
             json_obj["_status"] = "ERR"
         #json_obj["children_sku"] = [{"dfds":"dfds"}]
         json_obj["children_sku"] = get_children_skulist_from_parent_sku(p_sku_str)
+        json_obj.pop("_updated", None)
+        json_obj.pop("_created", None)
+        json_obj.pop("_etag", None)
+        json_obj.pop("_links", None)
+        json_obj.pop("_id", None)
+        '''
+        json_obj["_updated"] = ""
+        json_obj["_created"] = ""
+        json_obj["_etag"] = ""
+        json_obj["_links"] = ""
+        '''
         custom_response = [json.dumps(json_obj)]
         payload.response = custom_response
+        print(payload.response)
         payload.mimetype = 'text/json'
     if resource == 'order':
         print("-------------------------debug----------------------")
