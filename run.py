@@ -21,6 +21,7 @@ import json
 import time
 from efashion_task import *
 import traceback
+from req_postgres.get_children_from_parent_product import *
 #from req_postgres import output_all_products_in_stock
 
 # Heroku support: bind to PORT if defined, otherwise default to 5000.
@@ -47,6 +48,8 @@ def update_stockfull(request, payload):
     account = accounts.insert(docs)
 
 def post_get_callback(resource, request, payload):
+    if resource == 'order':
+        pass
     if resource == 'stockfull':
         print("!!!!!!!!!!!!!!")
         print(type(payload))
@@ -63,6 +66,21 @@ def post_get_callback(resource, request, payload):
         print("!!!!!!!!!!!!!!")
 
 def post_post_callback(resource, request, payload):
+    if resource == 'children_products':
+        print("------children products--------")
+        print(payload.response)
+        print(payload.response[0].decode())
+        json_obj = json.loads(payload.response[0].decode())
+        request_dict = request.json
+        try:
+            p_sku_str = request_dict['p_sku']
+        except:
+            json_obj["_status"] = "ERR"
+        #json_obj["children_sku"] = [{"dfds":"dfds"}]
+        json_obj["children_sku"] = get_children_skulist_from_parent_sku(p_sku_str)
+        custom_response = [json.dumps(json_obj)]
+        payload.response = custom_response
+        payload.mimetype = 'text/json'
     if resource == 'order':
         print("-------------------------debug----------------------")
         print(type(payload))
