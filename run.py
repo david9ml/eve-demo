@@ -130,8 +130,13 @@ app.on_insert += read_insert
 
 @app.after_request
 def after_request(response):
-    response.headers.add('X-Ahmed', 'Chao Yan')
-    response.headers.add('X-Charlie', 'Chao Yan')
+    #response.headers.add('X-Ahmed', 'Chao Yan')
+    #response.headers.add('X-Charlie', 'Chao Yan')
+    response.headers["content-type"] = "text/plain"
+    response.headers["content-length"] = 1024
+    print("*********************************************")
+    print(response)
+    print("*********************************************")
     return response
 
 if __name__ == '__main__':
